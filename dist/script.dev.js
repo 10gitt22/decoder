@@ -65,13 +65,33 @@ function getBreakpoint(angle) {
   init = function init() {
     sleeve.addEventListener("mousedown", start, false);
     circle.addEventListener("mousedown", start, false);
+    sleeve.addEventListener('touchstart', start, false);
     document.addEventListener('mousemove', function (event) {
       if (active === true) {
         event.preventDefault();
         rotate(event);
       }
     });
+    document.addEventListener('touchmove', function (event) {
+      if (active === true) {
+        event.preventDefault();
+        rotate(event);
+      }
+    });
     document.addEventListener('mouseup', function (event) {
+      event.preventDefault();
+
+      if (active) {
+        stop(event);
+      } else {
+        clickedNoteEvent && clickedNoteEvent.target.className === 'circle-item' && hadndleClick(clickedNoteEvent);
+      }
+
+      clickedNoteEvent = undefined;
+      active = false;
+      clearTimeout(timer);
+    });
+    document.addEventListener('touchend', function (event) {
       event.preventDefault();
 
       if (active) {
