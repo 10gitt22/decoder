@@ -65,7 +65,7 @@ function getBreakpoint(angle) {
   init = function init() {
     sleeve.addEventListener("mousedown", start, false);
     circle.addEventListener("mousedown", start, false);
-    sleeve.addEventListener('touchstart', start, false);
+    sleeve.addEventListener('touchstart', startMobile, false);
     document.addEventListener('mousemove', function (event) {
       if (active === true) {
         event.preventDefault();
@@ -106,8 +106,56 @@ function getBreakpoint(angle) {
     });
   };
 
-  start = function start(e) {
+  startMobile = function startMobile(e) {
     var _this = this;
+
+    e.preventDefault();
+    rot.style.transition = null;
+
+    if (e.target.id === 'sleeve') {
+      var bb = this.getBoundingClientRect(),
+          touchLocation = e.targetTouches[0],
+          t = bb.top,
+          l = bb.left,
+          h = bb.height,
+          w = bb.width,
+          x,
+          y;
+      center = {
+        x: l + w / 2,
+        y: t + h / 2
+      };
+      x = touchLocation.pageX - center.x;
+      y = touchLocation.pageY - center.y;
+      startAngle = R2D * Math.atan2(y, x);
+      active = true;
+      return;
+    }
+
+    timer = setTimeout(function () {
+      var bb = _this.getBoundingClientRect(),
+          touchLocation = e.targetTouches[0],
+          t = bb.top,
+          l = bb.left,
+          h = bb.height,
+          w = bb.width,
+          x,
+          y;
+
+      center = {
+        x: l + w / 2,
+        y: t + h / 2
+      };
+      x = touchLocation.pageX - center.x;
+      y = touchLocation.pageY - center.y;
+      startAngle = R2D * Math.atan2(y, x);
+      active = true;
+    }, 150);
+    if (e.target.className === 'circle-item') clickedNoteEvent = e;
+  };
+
+  start = function start(e) {
+    var _this2 = this;
 
     e.preventDefault();
     rot.style.transition = null;
@@ -132,7 +180,7 @@ function getBreakpoint(angle) {
     }
 
     timer = setTimeout(function () {
-      var bb = _this.getBoundingClientRect(),
+      var bb = _this2.getBoundingClientRect(),
           t = bb.top,
           l = bb.left,
           h = bb.height,

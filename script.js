@@ -59,7 +59,7 @@ function getBreakpoint(angle) {
   init = function () {
     sleeve.addEventListener("mousedown", start, false);
     circle.addEventListener("mousedown", start, false);
-    sleeve.addEventListener('touchstart', start, false)
+    sleeve.addEventListener('touchstart', startMobile, false)
 
 
 
@@ -101,6 +101,53 @@ function getBreakpoint(angle) {
       clearTimeout(timer)
     });
   };
+
+  startMobile = function (e) {
+    e.preventDefault();
+    rot.style.transition = null
+
+    if (e.target.id === 'sleeve') {
+      var bb = this.getBoundingClientRect(),
+        touchLocation = e.targetTouches[0],
+        t = bb.top,
+        l = bb.left,
+        h = bb.height,
+        w = bb.width,
+        x, y;
+      center = {
+        x: l + (w / 2),
+        y: t + (h / 2)
+      };
+      x = touchLocation.pageX - center.x;
+      y = touchLocation.pageY - center.y;
+      startAngle = R2D * Math.atan2(y, x);
+      active = true
+      return
+    }
+
+    timer = setTimeout(() => {
+      var bb = this.getBoundingClientRect(),
+        touchLocation = e.targetTouches[0],
+        t = bb.top,
+        l = bb.left,
+        h = bb.height,
+        w = bb.width,
+        x, y;
+      center = {
+        x: l + (w / 2),
+        y: t + (h / 2)
+      };
+      x = touchLocation.pageX - center.x;
+      y = touchLocation.pageY - center.y;
+      startAngle = R2D * Math.atan2(y, x);
+      active = true
+    }, 150)
+
+    if (e.target.className === 'circle-item') clickedNoteEvent = e
+  };
+
+
+
 
   start = function (e) {
     e.preventDefault();
